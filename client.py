@@ -19,9 +19,16 @@ class SwftBot(Client):
             self.send(Message(text="About {} days, {} hours, and {} minutes left!".format(time_remaining.days, time_remaining.seconds // 3600, time_remaining.seconds % 3600 // 60)), thread_id=thread_id, thread_type=thread_type)
         elif message_object.text.startswith('@swftbot hello'):
             self.send(Message(text='Hello World!'), thread_id=thread_id, thread_type=thread_type)
+        elif message_object.text.startswith('@swftbot insult'):
+            insultee = message_object.text[16:]
+            if insultee.startswith("Cha") or insultee.startswith("cha"):
+                self.send(Message("Chandler is great! Can't insult him... :D"), thread_id=thread_id, thread_type=thread_type)
+            else:
+                self.send(Message(text=insultee + " smells funny!"), thread_id=thread_id, thread_type=thread_type)
         elif message_object.text.startswith('@swftbot'):
             msg_text = ("swftbot usage:\n"
                     "@swftbot hello: displays \"Hello World!\"\n"
+                    "@swftbot insult <name>: Sends an insult to <name>\n"
                     "@swftbot help: displays this help text")
             self.send(Message(text=msg_text), thread_id=thread_id, thread_type=thread_type)
 
