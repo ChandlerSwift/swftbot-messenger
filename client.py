@@ -2,6 +2,7 @@
 
 from fbchat import Client
 from fbchat.models import *
+import datetime
 
 # Don't include trailing spaces
 # Haha you thought I was going to include these in plaintext? asd
@@ -14,7 +15,8 @@ class SwftBot(Client):
     def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
 
         if message_object.text.startswith('@swftbot time'):
-            self.send(Message(text='4eva'), thread_id=thread_id, thread_type=thread_type)
+            time_remaining = datetime.datetime(2018, 6, 6, 1, 54) - datetime.datetime.now()
+            self.send(Message(text="About {} days, {} hours, and {} minutes left!".format(time_remaining.days, time_remaining.seconds // 3600, time_remaining.seconds % 3600 // 60)), thread_id=thread_id, thread_type=thread_type)
         elif message_object.text.startswith('@swftbot hello'):
             self.send(Message(text='Hello World!'), thread_id=thread_id, thread_type=thread_type)
         elif message_object.text.startswith('@swftbot'):
