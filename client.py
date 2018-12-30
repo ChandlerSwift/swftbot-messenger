@@ -4,6 +4,7 @@ from fbchat import Client
 from fbchat.models import *
 import datetime
 import xkcd
+import wikipedia
 
 # Don't include trailing spaces
 # Haha you thought I was going to include these in plaintext? asd
@@ -11,6 +12,9 @@ file = open("facebook-username.txt", "r")
 facebook_username = file.read()
 file = open("facebook-password.txt", "r")
 facebook_password = file.read()
+
+sections = []
+num_sections = 0
 
 class SwftBot(Client):
     def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
@@ -51,6 +55,28 @@ class SwftBot(Client):
                     return
                 xkcd_comic=xkcd.Comic(xkcd_number)
             self.sendRemoteImage(xkcd_comic.getImageLink(), message=Message(text=xkcd_comic.getAltText()), thread_id=thread_id, thread_type=thread_type)
+        elif message_object.text.startswith('@swftbot wikipedia'):
+          global sections
+          global num_sections
+          try:
+            query = message_object.text[19:]
+            if query == "next":
+                if len(sections) > 0:
+                  self.send(Message(sections.pop(0)), thread_id=thread_id, thread_type=thread_type)
+                  self.send(Message("Section %i of %i" % (num_sections - len(sections), num_sections)), thread_id=thread_id, thread_type=thread_type)
+                else:
+                  print('No more sections!')
+            else:
+                current_page = wikipedia.WikipediaPage(query)
+                if current_page is None:
+                  print("No page found")
+                else:
+                  sections = current_page.content.split("\n\n\n")
+                  num_sections = len(sections)
+                  self.send(Message(sections.pop(0)), thread_id=thread_id, thread_type=thread_type)
+                  self.send(Message("Section %i of %i" % (num_sections - len(sections), num_sections)), thread_id=thread_id, thread_type=thread_type)
+          except:
+            self.send(Message("Wikipedia Error"), thread_id=thread_id, thread_type=thread_type)
         elif message_object.text.startswith('@swftbot'):
             msg_text = ("swftbot usage:\n"
                     "@swftbot hello: displays \"Hello World!\"\n"
