@@ -8,10 +8,8 @@ import wikipedia
 
 # Don't include trailing spaces
 # Haha you thought I was going to include these in plaintext? asd
-file = open("facebook-username.txt", "r") 
-facebook_username = file.read()
-file = open("facebook-password.txt", "r")
-facebook_password = file.read()
+facebook_username = open("facebook-username.txt", "r").read()
+facebook_password = open("facebook-password.txt", "r").read()
 
 sections = []
 num_sections = 0
